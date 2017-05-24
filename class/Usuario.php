@@ -73,6 +73,46 @@
 				$this->setDataCad(new DateTime($row['data_cad']));
 			}
 		}
+
+		public static function getList(){
+
+			$sql = new Sql();
+
+			return $sql->select("SELECT * FROM tb_usuarios ORDER BY login");
+		}
+
+		public static function searchUser($login){
+			$sql = new Sql();
+
+			return $sql->select("SELECT * FROM tb_usuarios WHERE login LIKE :SEARCH ORDER BY login", array(
+					":SEARCH" => "%" . $login . "%"
+				));
+		}
+
+		public function login($login, $password){
+			$sql = new Sql();
+
+			$result = $sql->select("SELECT * FROM tb_usuarios WHERE login = :LOGIN && senha = :PASSWORD", array(
+					":LOGIN" => $login,
+					":PASSWORD" => $password
+				));
+
+			if (count($result) > 0) {
+				
+				$row = $result[0];
+
+				$this->setIdUsuario($row['id_usuario']);
+
+				$this->setLogin($row['login']);
+
+				$this->setSenha($row['senha']);
+
+				$this->setDataCad(new DateTime($row['data_cad']));
+			} else {
+				throw new Exception("Login e/ou senha inválidos");
+				
+			}
+		}
 	}
 
 ?>
