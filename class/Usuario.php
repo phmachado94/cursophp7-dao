@@ -138,6 +138,19 @@
 					":ID" => $this->getIdUsuario()
 				));
 		}
+
+		public function delete(){
+			$sql = new Sql();
+
+			$sql->query("DELETE FROM tb_usuarios WHERE id_usuario = :ID", array(
+					":ID" => $this->getIdUsuario()
+				));
+
+			$this->setIdUsuario(0);
+			$this->setLogin("");
+			$this->setSenha("");
+			$this->setDataCad(new DateTime());
+		}
 	}
 
 ?>

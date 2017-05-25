@@ -3,9 +3,16 @@
 	require_once("config.php");
 
 	$usuario = new Usuario();
+	$usuario->loadById(8);
+	$usuario->delete();
+	echo $usuario;
+
+	/* alterar um usuario
+	$usuario = new Usuario();
 	$usuario->loadById(6);
 	$usuario->update("professor", "professor");
 	echo $usuario;
+	*/
 	
 	/* criando um novo usuario
 	$aluno = new Usuario("usuario", "usuario");
