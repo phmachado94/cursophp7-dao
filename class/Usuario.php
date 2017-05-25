@@ -9,6 +9,11 @@
 
 
 		//Inicio - métodos mágicos
+		public function __construct($login = "", $senha = ""){
+			$this->setLogin($login);
+			$this->setSenha($senha);
+		}
+
 		public function __toString(){
 			return json_encode(array(
 				"id_usuario" => $this->getIdUsuario(),
@@ -62,15 +67,7 @@
 
 			if (count($result) > 0) {
 				
-				$row = $result[0];
-
-				$this->setIdUsuario($row['id_usuario']);
-
-				$this->setLogin($row['login']);
-
-				$this->setSenha($row['senha']);
-
-				$this->setDataCad(new DateTime($row['data_cad']));
+				$this->setData($result[0]);
 			}
 		}
 
@@ -98,21 +95,50 @@
 				));
 
 			if (count($result) > 0) {
-				
-				$row = $result[0];
 
-				$this->setIdUsuario($row['id_usuario']);
-
-				$this->setLogin($row['login']);
-
-				$this->setSenha($row['senha']);
-
-				$this->setDataCad(new DateTime($row['data_cad']));
+				$this->setData($result[0]);
 			} else {
 				throw new Exception("Login e/ou senha inválidos");
 				
 			}
 		}
+
+		public function setData($data){
+			$this->setIdUsuario($data['id_usuario']);
+
+			$this->setLogin($data['login']);
+
+			$this->setSenha($data['senha']);
+
+			$this->setDataCad(new DateTime($data['data_cad']));
+		}
+
+		public function insert(){
+			$sql = new Sql();
+
+			$result = $sql->select("CALL sp_usuarios_insert(:LOGIN, :PASSWORD)", array(
+					":LOGIN" => $this->getLogin(),
+					":PASSWORD" => $this->getSenha()
+				));
+
+			if (count($result) > 0) {
+				$this->setData($result[0]);
+			}
+		}
+
+		public function update($login, $password){
+			$this->setLogin($login);
+			$this->setSenha($password);
+
+			$sql = new Sql();
+
+			$sql->query("UPDATE tb_usuarios SET login = :LOGIN, senha = :PASSWORD WHERE id_usuario = :ID", array(
+					":LOGIN" => $this->getLogin(),
+					":PASSWORD" => $this->getSenha(),
+					":ID" => $this->getIdUsuario()
+				));
+		}
 	}
 
 ?>
+
